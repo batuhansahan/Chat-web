@@ -14,18 +14,18 @@ function App({ isConnected, isRoomJoined, username, sendMessage, messages }) {
         <div className="MessageHeader"></div>
         <div id="messages" className="MessageBody">
           {messages.map((item, i) => {
-            return item.user === username ? (
+            return item.user.name === username ? (
               <div className="myMessage">
-                <div className="username">{item.user}</div>
-                <div className="box" key={item.id}>
-                  <div>{item.message}</div>
+                <div className="username">{item.user.name}</div>
+                <div className="box" key={item._id}>
+                  <div>{item.text}</div>
                 </div>
               </div>
             ) : (
               <div className="theirMessage">
-                <div className="username">{item.user}</div>
+                <div className="username">{item.user.name}</div>
                 <div className="box">
-                  <div>{item.message}</div>
+                  <div>{item.text}</div>
                 </div>
               </div>
             );

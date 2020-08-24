@@ -70,8 +70,13 @@ class App extends React.Component {
         JSON.stringify({
           action: "chat-pub",
           room: room,
-          message: value,
-          user: username,
+          text: value,
+          createdAt: new Date(),
+          user: {
+            _id: username,
+            name: username,
+            avatar: "https://i.hizliresim.com/iIBmll.png",
+          },
         })
       );
     }
