@@ -3,81 +3,124 @@ import "./styles/App.css";
 
 import Message from "./components/Message";
 import Room from "./components/Room";
-import ConnectionStatus from './components/ConnectionStatus';
+import ConnectionStatus from "./components/ConnectionStatus";
 
-function App() {
-  const ws = useRef(null);
-  const [isWs, setIsWs] = useState("Not Connected");
-  const [isConnected,setIsConnected] = useState(false);
-  const [isRoomJoined,setIsRoomJoined] = useState(false);
-  const [room,setRoom] = useState("");
-  const [username,setUsername] = useState("");
-  const [messages,setMessages] = useState([]);
-  const wsRef = useRef(null);
-
-  useEffect(() => {
-    connectWs();
-  }, []);
-
-  const connectWs = () => {
-    setIsWs("Connecting");
-    setIsConnected(false)
-    ws.current = new WebSocket("ws://localhost:8082");
-    clearInterval(wsRef.current)
-    ws.current.onopen = () => {
-      setIsWs("Connected");
-      setIsConnected(true)
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isWs: "Connecting",
+      isConnected: false,
+      isRoomJoined: false,
+      room: "",
+      username: "",
+      chat: [],
+    };
+    this.ws = new WebSocket("ws://localhost:8082");
+    this.ws.onopen = () => {
+      this.setState({
+        isWs: "Connected",
+        isConnected: true,
+        isRoomJoined: false,
+        room: "",
+      });
     };
 
-    ws.current.onclose = () => {
-        wsRef.current = setInterval(()=>{
-          connectWs()
-        },2000)
-        setIsWs("Connecting");
-        setIsConnected(false);
-        setIsRoomJoined(false);
-        setRoom("");
+    this.ws.onclose = () => {
+      this.setState({
+        isWs: "Disconnected",
+        isConnected: false,
+        isRoomJoined: false,
+        room: "",
+      });
     };
 
-    ws.current.onmessage = (data) => {
-      console.log(data)
-    }
-  };
-
-  const joinRoom = (room = 'Public', username = 'User') => {
-    setIsRoomJoined(true);
-    setRoom(room);
-    setUsername(username)
-    ws.current.send(
-      JSON.stringify({
-        action:'chat-sub',
-        room:room
-      })
-    );
+    this.ws.onmessage = this.receiveMessage;
+    this.joinRoom = this.joinRoom.bind(this);
   }
 
-  const sendMessage = (value) => {
-    if(value.trim()){
-      ws.current.send(
+  componentDidMount() {
+    this.setState({ isWs: "Connecting" });
+  }
+
+  receiveMessage = (data) => {
+    let message = JSON.parse(data.data);
+    this.setState({
+      chat: [message, ...this.state.chat],
+    });
+
+    const objDiv = document.getElementById("messages");
+    objDiv.scrollTop = objDiv.scrollHeight;
+  };
+
+  joinRoom = (room = "Public", username = "User") => {
+    this.setState({ isRoomJoined: true, room, username });
+    this.ws.send(
+      JSON.stringify({
+        action: "chat-sub",
+        room: room,
+      })
+    );
+  };
+
+  sendMessage = (value) => {
+    const { room, username } = this.state;
+    if (value.trim()) {
+      this.ws.send(
         JSON.stringify({
-          action:'chat-pub',
-          room:room,
-          message:value,
-          user:username
+          action: "chat-pub",
+          room: room,
+          message: value,
+          user: username,
         })
       );
     }
-  }
+  };
 
-  return (
-    <div className="App">
-      <div className="Container">
-        <ConnectionStatus isWs={isWs} isRoomJoined={isRoomJoined} room={room} username={username}/>
-        <Room isConnected={isConnected} isRoomJoined={isRoomJoined} joinRoom={joinRoom} />
-        <Message isConnected={isConnected} isRoomJoined={isRoomJoined} messages={messages} sendMessage={sendMessage} />
+  leaveRoom = () => {
+    this.setState({
+      isConnected: true,
+      isRoomJoined: false,
+      room: "",
+      chat: [],
+    });
+  };
+  render() {
+    const {
+      isWs,
+      isRoomJoined,
+      room,
+      username,
+      isConnected,
+      chat,
+    } = this.state;
+    const { joinRoom, sendMessage } = this;
+    return (
+      <div className="App">
+        <div className="Container">
+          <ConnectionStatus
+            isWs={isWs}
+            isRoomJoined={isRoomJoined}
+            room={room}
+            exitRoom={() => this.leaveRoom()}
+            username={username}
+          />
+          <Room
+            isConnected={isConnected}
+            isRoomJoined={isRoomJoined}
+            joinRoom={joinRoom}
+          />
+          <Message
+            isConnected={isConnected}
+            isRoomJoined={isRoomJoined}
+            messages={chat}
+            username={username}
+            sendMessage={sendMessage}
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default App;

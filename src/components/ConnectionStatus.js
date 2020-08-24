@@ -3,7 +3,7 @@ import "../styles/connectionStatus.css";
 import {BiUser,BiMessageDetail} from 'react-icons/bi'
 import {FiMessageCircle, FiUser, FiLogOut} from 'react-icons/fi'
 
-function connectionStatus({ isWs, isRoomJoined, room, username}) {
+function connectionStatus({ isWs, isRoomJoined, room, username, exitRoom}) {
   return (
     <div className="Status">
       <div className="flex-row">
@@ -16,7 +16,7 @@ function connectionStatus({ isWs, isRoomJoined, room, username}) {
       </div>
       }
       {isRoomJoined && 
-      <div className="StatusBox">
+      <div className="StatusBox" onClick={()=>exitRoom()}>
         <div className="aligncenter red"><FiLogOut color={"red"} size={22} style={{marginRight:5}}/> Exit</div>
       </div>}
       </div>

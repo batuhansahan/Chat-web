@@ -44,7 +44,7 @@ code {
   color: #525252;
   display: flex;
   flex-direction: row;
-  width: fit-content;
+  width: 100%;
   align-items: flex-start;
   transition: all .2s ease-in;
   border: none;
