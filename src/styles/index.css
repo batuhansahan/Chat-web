@@ -1,0 +1,75 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f3f3f3;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.Button{
+  background-color: #0366d6;
+  padding: 15px 20px;
+  border-radius: 3px;
+  margin:10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  align-items: flex-start;
+  transition: all .2s ease-in;
+  border: none;
+}
+
+.Button:hover{
+  transform: scale(.99);
+}
+
+.TextInput{
+  background-color: #fff;
+  padding: 15px 20px;
+  margin:10px;
+  border-radius: 3px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #525252;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  align-items: flex-start;
+  transition: all .2s ease-in;
+  border: none;
+  box-shadow: 0 0 3px 0.5px rgba(0,0,0,.1);
+}
+
+.flex-row{
+  display: flex;
+  flex-direction: row;
+}
+
+.center{
+  justify-content: center;
+  align-items: center;
+}
+
+.margintop50{
+  margin-top: 50px;
+}
+
+.aligncenter{
+  align-items: center;
+  display: flex;
+}
+
+.red{
+  color: red;
+}
